@@ -8,13 +8,14 @@ description = ''
 sourceCompatibility = 1.6
 targetCompatibility = 1.6
 
+keystoreAlias = 'copad'
+
 repositories {
 	mavenCentral()
 }
 
 dependencies {
 	groovy 'org.codehaus.groovy:groovy-all:1.8.5'
-	compile files('lib/swt-3.7.1-macosx-x86_64.jar')
 }
 
 def defaultEncoding = 'UTF-8'
@@ -23,18 +24,47 @@ def defaultEncoding = 'UTF-8'
 [compileGroovy, compileTestGroovy]*.options*.encoding = defaultEncoding
 [compileGroovy, compileTestGroovy]*.groovyOptions*.encoding = defaultEncoding
 
-task (run, dependsOn: 'classes', type: JavaExec) {
-	classpath = sourceSets.main.runtimeClasspath
-	main = 'com.lyhdev.copad.ScriptLoader'
-	jvmArgs = ['-XstartOnFirstThread', '-Xdock:name=CoPadEngine']
-}
-
 // Package Fat Jar
 jar {
 	from { configurations.runtime.collect { it.isDirectory() ? it : zipTree(it) } }
 	manifest {
 		attributes 'Implementation-Title': 'CoPad Engine', 'Implementation-Version': version, 'Main-Class' : 'com.lyhdev.copad.ScriptLoader'
 	}
+}
+
+jar.doLast {
+	jar.archivePath
+	Console console = System.console()
+	keystorePassword = console.readPassword("PGP Key Password: ")
+	ant.signjar(
+		alias: keystoreAlias,
+		storepass: keystorePassword,
+		keypass: keystorePassword
+	) {
+		fileset (dir: 'build/libs') {
+			include(name: '**/*.jar')
+		}
+	}
+
+	ant.copy(todir: 'lib-signed') {
+		fileset (dir: 'lib')
+	}
+
+	ant.signjar(
+		alias: keystoreAlias,
+		storepass: keystorePassword,
+		keypass: keystorePassword
+	) {
+		fileset (dir: 'lib-signed') {
+			include(name: '**/*.jar')
+		}
+	}
+}
+
+task (run, dependsOn: 'classes', type: JavaExec) {
+	classpath = sourceSets.main.runtimeClasspath
+	main = 'com.lyhdev.copad.ScriptLoader'
+	jvmArgs = ['-XstartOnFirstThread', '-Xdock:name=copad']
 }
 
 defaultTasks 'run'
