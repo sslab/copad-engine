@@ -1,0 +1,32 @@
+apply plugin: 'java'
+apply plugin: 'groovy'
+
+group = 'copad'
+version = '0.0.1'
+description = ''
+
+sourceCompatibility = 1.6
+targetCompatibility = 1.6
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	groovy 'org.codehaus.groovy:groovy-all:1.8.5'
+	compile files('lib/swt-3.7.1-macosx-x86_64.jar')
+}
+
+def defaultEncoding = 'UTF-8'
+
+[compileJava, compileTestJava]*.options*.encoding = defaultEncoding
+[compileGroovy, compileTestGroovy]*.options*.encoding = defaultEncoding
+[compileGroovy, compileTestGroovy]*.groovyOptions*.encoding = defaultEncoding
+
+task (run, dependsOn: 'classes', type: JavaExec) {
+	classpath = sourceSets.main.runtimeClasspath
+	main = 'com.lyhdev.copad.AppLoader'
+	jvmArgs = ['-XstartOnFirstThread', '-Xdock:name=Copad Browser']
+}
+
+defaultTasks 'run'
