@@ -25,8 +25,17 @@ def defaultEncoding = 'UTF-8'
 
 task (run, dependsOn: 'classes', type: JavaExec) {
 	classpath = sourceSets.main.runtimeClasspath
-	main = 'com.lyhdev.copad.AppLoader'
-	jvmArgs = ['-XstartOnFirstThread', '-Xdock:name=Copad Browser']
+	main = 'com.lyhdev.copad.ScriptLoader'
+	jvmArgs = ['-XstartOnFirstThread', '-Xdock:name=CoPadEngine']
+}
+
+// Package Fat Jar
+jar {
+	from { configurations.runtime.collect { it.isDirectory() ? it : zipTree(it) } }
+	manifest {
+		attributes 'Implementation-Title': 'CoPad Engine', 'Implementation-Version': version, 'Main-Class' : 'com.lyhdev.copad.ScriptLoader'
+	}
 }
 
 defaultTasks 'run'
+
