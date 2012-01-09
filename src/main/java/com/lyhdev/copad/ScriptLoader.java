@@ -59,6 +59,8 @@ public class ScriptLoader
 	private GroovyShell shell = null;
 
 	public void loadGroovy(String scriptURL) throws Exception {
+		System.out.println("Load Groovy " + scriptURL);
+
 		//ClassLoader parent = getClass().getClassLoader();
 		//GroovyClassLoader loader = new GroovyClassLoader(parent);
 		//Class groovyClass = loader.parseClass(new File("src/test/groovy/script/HelloWorld.groovy"));

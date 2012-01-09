@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?><jnlp spec="1.0+" codebase="http://localhost:8080/">
+	<information>
+		<title>CoPad Scripting</title>
+		<vendor>StrongSoft</vendor>
+		<homepage href="http://copad.cc/" />
+		<description>CoPad Scripting Copyright (C) 2011</description>
+	</information>
+	<security>
+		<all-permissions/>
+	</security>
+	<resources>
+		<j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se" />
+		<jar href="copad-engine-0.0.1.jar" />
+		<property name="core.script.type" value="groovy" />
+		<property name="core.script.url" value="http://copad.cc/src/3" />
+		<property name="core.engine.type" value="groovy" />
+		<property name="core.engine.url" value="http://copad.cc/src/1" />
+		<property name="core.callback.url" value="http://copad.cc/api/callback/10/8/2/620ee082abf574f2ce5d13af01af9374" />
+	</resources>
+	<application-desc main-class="com.lyhdev.copad.ScriptLoader" />
+</jnlp>

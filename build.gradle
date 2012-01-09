@@ -1,5 +1,6 @@
 apply plugin: 'java'
 apply plugin: 'groovy'
+apply plugin: 'jetty'
 
 group = 'copad'
 version = '0.0.1'
@@ -24,40 +25,14 @@ def defaultEncoding = 'UTF-8'
 [compileGroovy, compileTestGroovy]*.options*.encoding = defaultEncoding
 [compileGroovy, compileTestGroovy]*.groovyOptions*.encoding = defaultEncoding
 
+jettyRun.webAppSourceDirectory = file('lib-signed')
+jettyRun.contextPath = '/'
+
 // Package Fat Jar
 jar {
 	from { configurations.runtime.collect { it.isDirectory() ? it : zipTree(it) } }
 	manifest {
 		attributes 'Implementation-Title': 'CoPad Engine', 'Implementation-Version': version, 'Main-Class' : 'com.lyhdev.copad.ScriptLoader'
-	}
-}
-
-jar.doLast {
-	jar.archivePath
-	Console console = System.console()
-	keystorePassword = console.readPassword("PGP Key Password: ")
-	ant.signjar(
-		alias: keystoreAlias,
-		storepass: keystorePassword,
-		keypass: keystorePassword
-	) {
-		fileset (dir: 'build/libs') {
-			include(name: '**/*.jar')
-		}
-	}
-
-	ant.copy(todir: 'lib-signed') {
-		fileset (dir: 'lib')
-	}
-
-	ant.signjar(
-		alias: keystoreAlias,
-		storepass: keystorePassword,
-		keypass: keystorePassword
-	) {
-		fileset (dir: 'lib-signed') {
-			include(name: '**/*.jar')
-		}
 	}
 }
 
